@@ -183,6 +183,7 @@
    display: flex;
    align-items: center;
    justify-content: center;
+   vertical-align: middle;
 }
 
 
@@ -215,6 +216,7 @@
   <div id="marble_18" class="marble_class"></div>
   <div id="marble_19" class="marble_class"></div>
   <div id="marble_20" class="marble_class"></div>
+  <input name="circle_clicked" id="circle_clicked"/>
 </div>
 
 <div id="phase_2" style="display:none">
@@ -258,10 +260,6 @@ setTimeout(function(){
 
 // single line comment
 
-$("#my_header").on("click", function(){
-  alert("beep");
-});
-
 $(".marble_class").on("click",function(){
   $("#circle_clicked").val(this.id);
 
@@ -270,7 +268,7 @@ $(".marble_class").on("click",function(){
 });
 
 $(".curious_option").on("click",function(){
-  $("option_clicked").val(this.id);
+  $("#option_clicked").val(this.id);
 });
 
 

@@ -5,10 +5,22 @@
   color: blue;
 }
 
-#square_example{
+#top_circle{
+  position: absolute;
+  width: 475px;
+  height:100px;
+  border-radius:50%;
+  background-color:grey;
+  border-style: solid;
+}
+
+#jar_main{
+  position: absolute;
+  top: 50px;
   width: 475px;
   height: 650px;
   background-color:grey;
+  border-radius: 0% 0% 15% 15%;
 }
 
 .clickable_circles{
@@ -130,13 +142,13 @@
 #circle_example_19{
   top:540px;
   left: 245px;
-  background-color:green;
+  background-color:#4169E1;
 }
 
 #circle_example_20{
   top:540px;
   left: 355px;
-  background-color:black;
+  background-color:firebrick;
 }
 
 
@@ -145,8 +157,9 @@
 <!-- use the stuff on the left for comments
   HTML here
 -->
-<h1 id="my_header">Hi there</h1>
-<div id="square_example"></div>
+<body style="background-color:powdergrey;">
+<div id="jar_main"></div>
+<div id="top_circle"></div>
 <div id="circle_example_1" class="clickable_circles"></div>
 <div id="circle_example_2" class="clickable_circles"></div>
 <div id="circle_example_3" class="clickable_circles"></div>
@@ -172,6 +185,7 @@
 
 
 <input name="circle_clicked" id="circle_clicked"/>
+</body>
 
 <script>
 /*

@@ -1,10 +1,6 @@
 <script src="jquery-3.5.1.min.js"></script>
 
 <style>
-#my_header{
-  color: blue;
-}
-
 #top_circle{
   position: absolute;
   width: 475px;
@@ -23,7 +19,7 @@
   border-radius: 0% 0% 15% 15%;
 }
 
-.clickable_circles{
+.marble_class{
   position: absolute;
   width:100px;
   height:100px;
@@ -151,6 +147,44 @@
   background-color:firebrick;
 }
 
+.curious_option{
+  position: absolute;
+  width:100px;
+  height:100px;
+  justify-content: center;
+  background-color:grey;
+  border-radius: 15% 15% 15% 15%;
+}
+
+#curious_1{
+  top: 50px;
+
+}
+
+#curious_2{
+  position: absolute;
+  top: 50px;
+  left: 120;
+}
+
+#curious_3{
+  position: absolute;
+  top: 50px;
+  left: 230;
+}
+
+#curious_4{
+  position: absolute;
+  top: 50px;
+  left: 340;
+}
+
+.content{
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
 
 </style>
 
@@ -161,33 +195,52 @@
   <body style="background-color:powdergrey;">
   <div id="jar_main"></div>
   <div id="top_circle"></div>
-  <div id="marble_1" class="clickable_circles"></div>
-  <div id="marble_2" class="clickable_circles"></div>
-  <div id="marble_3" class="clickable_circles"></div>
-  <div id="marble_4" class="clickable_circles"></div>
-  <div id="marble_5" class="clickable_circles"></div>
-  <div id="marble_6" class="clickable_circles"></div>
-  <div id="marble_7" class="clickable_circles"></div>
-  <div id="marble_8" class="clickable_circles"></div>
-  <div id="marble_9" class="clickable_circles"></div>
-  <div id="marble_10" class="clickable_circles"></div>
-  <div id="marble_11" class="clickable_circles"></div>
-  <div id="marble_12" class="clickable_circles"></div>
-  <div id="marble_13" class="clickable_circles"></div>
-  <div id="marble_14" class="clickable_circles"></div>
-  <div id="marble_15" class="clickable_circles"></div>
-  <div id="marble_16" class="clickable_circles"></div>
-  <div id="marble_17" class="clickable_circles"></div>
-  <div id="marble_18" class="clickable_circles"></div>
-  <div id="marble_19" class="clickable_circles"></div>
-  <div id="marble_20" class="clickable_circles"></div>
+  <div id="marble_1" class="marble_class"></div>
+  <div id="marble_2" class="marble_class"></div>
+  <div id="marble_3" class="marble_class"></div>
+  <div id="marble_4" class="marble_class"></div>
+  <div id="marble_5" class="marble_class"></div>
+  <div id="marble_6" class="marble_class"></div>
+  <div id="marble_7" class="marble_class"></div>
+  <div id="marble_8" class="marble_class"></div>
+  <div id="marble_9" class="marble_class"></div>
+  <div id="marble_10" class="marble_class"></div>
+  <div id="marble_11" class="marble_class"></div>
+  <div id="marble_12" class="marble_class"></div>
+  <div id="marble_13" class="marble_class"></div>
+  <div id="marble_14" class="marble_class"></div>
+  <div id="marble_15" class="marble_class"></div>
+  <div id="marble_16" class="marble_class"></div>
+  <div id="marble_17" class="marble_class"></div>
+  <div id="marble_18" class="marble_class"></div>
+  <div id="marble_19" class="marble_class"></div>
+  <div id="marble_20" class="marble_class"></div>
 </div>
 
 <div id="phase_2" style="display:none">
-  phase 2 is beginning
-  How curious were you? (1-4)
-  
 
+  How curious were you? (1-4)
+  <div id="curious_1" class="curious_option">
+    <div class ="content">
+      <p>1</p>
+    </div>
+  </div>
+  <div id="curious_2" class="curious_option">
+    <div class ="content">
+      <p>2</p>
+    </div>
+  </div>
+  <div id="curious_3" class="curious_option">
+    <div class ="content">
+      <p>3</p>
+    </div>
+  </div>
+  <div id="curious_4" class="curious_option">
+    <div class ="content">
+      <p>4</p>
+    </div>
+  </div>
+  <input name="option_clicked" id="option_clicked"/>
 </div>
 
 <script>
@@ -209,11 +262,15 @@ $("#my_header").on("click", function(){
   alert("beep");
 });
 
-$(".clickable_circles").on("click",function(){
+$(".marble_class").on("click",function(){
   $("#circle_clicked").val(this.id);
 
   $("#" + this.id).css("background-color","purple");
 
+});
+
+$(".curious_option").on("click",function(){
+  $("option_clicked").val(this.id);
 });
 
 

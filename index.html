@@ -24,127 +24,106 @@
   width:100px;
   height:100px;
   border-radius:50px;
-
 }
 
 #marble_1{
   top:100px;
   left: 25px;
-  background-color:red;
 }
 
 #marble_2{
   top:100px;
   left: 135px;
-  background-color:blue;
 }
 
 #marble_3{
   top:100px;
   left: 245px;
-  background-color:green;
 }
 
 #marble_4{
   top:100px;
   left: 355px;
-  background-color:black;
 }
 
 #marble_5{
   top:210px;
   left: 25px;
-  background-color:green;
 }
 
 #marble_6{
   top:210px;
   left: 135px;
-  background-color:black;
 }
 
 #marble_7{
   top:210px;
   left: 245px;
-  background-color:green;
 }
 
 #marble_8{
   top:210px;
   left: 355px;
-  background-color:black;
 }
 
 #marble_9{
   top:320px;
   left: 25px;
-  background-color:green;
 }
 
 #marble_10{
   top:320px;
   left: 135px;
-  background-color:black;
 }
 
 #marble_11{
   top:320px;
   left: 245px;
-  background-color:green;
 }
 
 #marble_12{
   top:320px;
   left: 355px;
-  background-color:black;
 }
 
 #marble_13{
   top:430px;
   left: 25px;
-  background-color:green;
 }
 
 #marble_14{
   top:430px;
   left: 135px;
-  background-color:black;
 }
 
 #marble_15{
   top:430px;
   left: 245px;
-  background-color:green;
 }
 
 #marble_16{
   top:430px;
   left: 355px;
-  background-color:black;
 }
 
 #marble_17{
   top:540px;
   left: 25px;
-  background-color:green;
 }
 
 #marble_18{
   top:540px;
   left: 135px;
-  background-color:black;
 }
 
 #marble_19{
   top:540px;
   left: 245px;
-  background-color:#4169E1;
 }
 
 #marble_20{
   top:540px;
   left: 355px;
-  background-color:firebrick;
 }
 
 .curious_option{
@@ -186,6 +165,12 @@
    vertical-align: middle;
 }
 
+#phase_1,
+#phase_2,
+#phase_3{
+  display:none;
+}
+
 
 </style>
 
@@ -219,7 +204,7 @@
   <input name="circle_clicked" id="circle_clicked"/>
 </div>
 
-<div id="phase_2" style="display:none">
+<div id="phase_2">
 
   How curious were you? (1-4)
   <div id="curious_1" class="curious_option">
@@ -245,13 +230,139 @@
   <input name="option_clicked" id="option_clicked"/>
 </div>
 
+<div id="phase_3">
+Outcome: <br>
+<div id="outcome_color"></div>
+<div id="outcome_reveal"></div>
+</div>
+
 <script>
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+var combinations_obj = {
+  "100%": 18,
+  "95%": 153,
+  "75%": 153,
+  "50%": 153
+}
+
+var colors = [
+  "firebrick",
+  "mediumBlue"
+]
+
+/*
+* Create list
+*/
+var percentage_order = [];
+
+for(var i = 0; i < combinations_obj["100%"]; i++){
+  percentage_order.push("100%");
+}
+for(var i = 0; i < combinations_obj["95%"]; i++){
+  percentage_order.push("95%");
+}
+for(var i = 0; i < combinations_obj["75%"]; i++){
+  percentage_order.push("75%");
+}
+for(var i = 0; i < combinations_obj["50%"]; i++){
+  percentage_order.push("50%");
+}
+
+/*
+* Randomise list order
+*/
+shuffleArray(percentage_order);
+
+/*
+* Check if array has 4+ repeats
+*/
+/*
+var in_a_row = 0;
+var working_list = [percentage_order[0]];
+var failed_list = [];
+for(var i = 1; i < percentage_order.length; i++){
+  if(percentage_order[i-1] == percentage_order[i]){
+    in_a_row++;
+  } else {
+    in_a_row = 0;
+  }
+  if(in_a_row > 3){
+    console.log(in_a_row);
+    console.log("i");
+    console.log(i);
+
+
+
+  } else {
+    working_list.push(percentage_order[i]);
+  }
+}
+*/
+
+
+//solution by Francisc at https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript
+function randomIntFromInterval(min, max) { // min and max included
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+
+
+/*
+* Phase 0
+*/
 setTimeout(function(){
+  run_phase_1();
+},500);
 
-  $("#phase_1").hide();
+// code here to set the colors of the marbles
+randomIntFromInterval
+
+
+
+/*
+* Phase 1
+*/
+function run_phase_1(){
+  $("#phase_1").show();
+  setTimeout(function(){
+    $("#phase_1").hide();
+    setTimeout(function(){
+      run_phase_2()
+    },500);
+  },3000);
+}
+
+/*
+* Phase 2
+*/
+function run_phase_2(){
   $("#phase_2").show();
+  setTimeout(function(){
+    $("#phase_2").hide();
+    setTimeout(function(){
+      run_phase_3();
+    },500);
+  },4000);
+}
 
-},3000);
+
+/*
+* Phase 3
+*/
+function run_phase_3(){
+  $("#phase_3").show();
+}
+
+
+//var curious_response_on = false;
+
 /*
   press CTRL-SHIFT-I to see the console
   This is for a block comment

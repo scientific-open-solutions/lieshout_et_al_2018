@@ -121,7 +121,7 @@
   left: 245px;
 }
 
-#marble_20{
+#marble_0{
   top:540px;
   left: 355px;
 }
@@ -181,6 +181,7 @@
   <body style="background-color:powdergrey;">
   <div id="jar_main"></div>
   <div id="top_circle"></div>
+  <div id="marble_0" class="marble_class"></div>
   <div id="marble_1" class="marble_class"></div>
   <div id="marble_2" class="marble_class"></div>
   <div id="marble_3" class="marble_class"></div>
@@ -200,7 +201,6 @@
   <div id="marble_17" class="marble_class"></div>
   <div id="marble_18" class="marble_class"></div>
   <div id="marble_19" class="marble_class"></div>
-  <div id="marble_20" class="marble_class"></div>
   <input name="circle_clicked" id="circle_clicked"/>
 </div>
 
@@ -246,39 +246,59 @@ function shuffleArray(array) {
 }
 
 var combinations_obj = {
-  "100%": 18,
-  "95%": 153,
-  "75%": 153,
-  "50%": 153
+  "20": 18,
+  "19": 153,
+  "15": 153,
+  "10": 153
 }
 
-var colors = [
-  "firebrick",
-  "mediumBlue"
-]
+var color_order = Array(239).fill("firebrick")
+                            .concat(Array(238)
+                            .fill("mediumBlue"))
+
 
 /*
 * Create list
 */
 var percentage_order = [];
 
-for(var i = 0; i < combinations_obj["100%"]; i++){
-  percentage_order.push("100%");
+for(var i = 0; i < combinations_obj["20"]; i++){
+  percentage_order.push("20");
 }
-for(var i = 0; i < combinations_obj["95%"]; i++){
-  percentage_order.push("95%");
+for(var i = 0; i < combinations_obj["19"]; i++){
+  percentage_order.push("19");
 }
-for(var i = 0; i < combinations_obj["75%"]; i++){
-  percentage_order.push("75%");
+for(var i = 0; i < combinations_obj["15"]; i++){
+  percentage_order.push("15");
 }
-for(var i = 0; i < combinations_obj["50%"]; i++){
-  percentage_order.push("50%");
+for(var i = 0; i < combinations_obj["10"]; i++){
+  percentage_order.push("10");
 }
 
 /*
 * Randomise list order
 */
 shuffleArray(percentage_order);
+shuffleArray(color_order);
+
+var  this_percentage = percentage_order.pop();
+var default_color = color_order.pop();
+
+if(default_color == "firebrick"){
+  other_color = "mediumBlue";
+} else {
+  other_color = "firebrick";
+}
+
+var jar_color_order = Array(parseFloat(this_percentage)).fill(default_color)
+                            .concat(Array(20-parseFloat(this_percentage))
+                            .fill(other_color))
+
+shuffleArray(jar_color_order);
+
+for(i=0; i< jar_color_order.length;i++){
+  $("#marble_"+i).css("background-color",jar_color_order[i]);
+};
 
 /*
 * Check if array has 4+ repeats
@@ -307,11 +327,6 @@ for(var i = 1; i < percentage_order.length; i++){
 */
 
 
-//solution by Francisc at https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript
-function randomIntFromInterval(min, max) { // min and max included
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
 
 
 /*
@@ -322,7 +337,6 @@ setTimeout(function(){
 },500);
 
 // code here to set the colors of the marbles
-randomIntFromInterval
 
 
 
@@ -360,23 +374,6 @@ function run_phase_3(){
   $("#phase_3").show();
 }
 
-
-//var curious_response_on = false;
-
-/*
-  press CTRL-SHIFT-I to see the console
-  This is for a block comment
-  We try to comment vertically when possible
-*/
-
-// single line comment
-
-$(".marble_class").on("click",function(){
-  $("#circle_clicked").val(this.id);
-
-  $("#" + this.id).css("background-color","purple");
-
-});
 
 $(".curious_option").on("click",function(){
   $("#option_clicked").val(this.id);

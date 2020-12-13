@@ -35,6 +35,8 @@ $.get("Order1.csv",function(result){
 var trial_row;
 
 $("#start_btn").on("click",function(){
+  Study.browser                       = participant_browser;
+  
   if($("#participant_id").val().length < 3){
     bootbox.alert("too short");
   } else {
@@ -249,7 +251,7 @@ function run_phase_3(){
   },500);
 }
 
-$(".curious_option").on("click",function(){
+$(".curious_btn").on("click",function(){
   Study.awaiting_response = false;
   Study.trial_response.curiosity_rating = this.id;
   run_phase_3();

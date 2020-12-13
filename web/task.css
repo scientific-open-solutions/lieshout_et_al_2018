@@ -64,36 +64,9 @@
   left:820px;
 }
 
-.curious_option{
-  position: absolute;
-  width:100px;
-  height:100px;
-  justify-content: center;
-  background-color:grey;
-  border-radius: 15% 15% 15% 15%;
-}
-
-#curious_1{
-  top: 50px;
-
-}
-
-#curious_2{
-  position: absolute;
-  top: 50px;
-  left: 120;
-}
-
-#curious_3{
-  position: absolute;
-  top: 50px;
-  left: 230;
-}
-
-#curious_4{
-  position: absolute;
-  top: 50px;
-  left: 340;
+.curious_btn{
+  padding: 20px;
+  margin: 20px;
 }
 
 .content{

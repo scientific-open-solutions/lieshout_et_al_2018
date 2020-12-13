@@ -35,10 +35,11 @@ $.get("Order1.csv",function(result){
 var trial_row;
 
 $("#start_btn").on("click",function(){
-  Study.browser                       = participant_browser;
+  Study.browser = participant_browser;
+  Study.mobile  = window.mobilecheck();
 
   if($("#participant_id").val().length < 3){
-    bootbox.alert("too short");
+    bootbox.alert("Please use a participant ID this is at least 3 characters long");
   } else {
     Study.start_date_ms   = (new Date()).getTime();
 
@@ -139,22 +140,20 @@ function run_phase_0(){
                                 .fill(trial_row.other_color));
     shuffleArray(jar_color_order);
 
-    /*
-    * trial specific info
-    */
+    /* trial specific info */
     Study.trial_response = {};
     Object.keys(trial_row).forEach(function(item){
       Study.trial_response[item] = trial_row[item];
     });
 
-    /*
-    * General study info
-    */
+    /* General study info */
     Study.trial_response.browser        = Study.browser;
     Study.trial_response.current_trial  = Study.current_trial;
     Study.trial_response.mobile         = Study.mobile;
     Study.trial_response.participant_id = Study.participant_id;
     Study.trial_response.total_score    = Study.total_score;
+
+    /* 
 
     /* Added jitter to marble position */
     var jitter_max = 5;

@@ -28,106 +28,6 @@
   border-radius:50px;
 }
 
-#marble_1{
-  top:120px;
-  left: 25px;
-}
-
-#marble_2{
-  top:120px;
-  left: 135px;
-}
-
-#marble_3{
-  top:120px;
-  left: 245px;
-}
-
-#marble_4{
-  top:120px;
-  left: 355px;
-}
-
-#marble_5{
-  top:230px;
-  left: 25px;
-}
-
-#marble_6{
-  top:230px;
-  left: 135px;
-}
-
-#marble_7{
-  top:230px;
-  left: 245px;
-}
-
-#marble_8{
-  top:230px;
-  left: 355px;
-}
-
-#marble_9{
-  top:340px;
-  left: 25px;
-}
-
-#marble_10{
-  top:340px;
-  left: 135px;
-}
-
-#marble_11{
-  top:340px;
-  left: 245px;
-}
-
-#marble_12{
-  top:340px;
-  left: 355px;
-}
-
-#marble_13{
-  top:450px;
-  left: 25px;
-}
-
-#marble_14{
-  top:450px;
-  left: 135px;
-}
-
-#marble_15{
-  top:450px;
-  left: 245px;
-}
-
-#marble_16{
-  top:450px;
-  left: 355px;
-}
-
-#marble_17{
-  top:560px;
-  left: 25px;
-}
-
-#marble_18{
-  top:560px;
-  left: 135px;
-}
-
-#marble_19{
-  top:560px;
-  left: 245px;
-}
-
-#marble_0{
-  top:560px;
-  left: 355px;
-}
-
 #marble_legend_col1{
   top:  280px;
   left: 700px;
@@ -260,8 +160,8 @@
       <p>4</p>
     </div>
   </div>
-  <input name="option_clicked" id="option_clicked"/>
 </div>
+
 
 <div id="phase_3">
 Outcome: <br>
@@ -279,6 +179,7 @@ function shuffleArray(array) {
 }
 
 var data_obj ={
+  current_trial: 0,
   participant_id : "tbc",
   responses: [],
   total_score : 0,
@@ -287,135 +188,95 @@ var data_obj ={
   date_start : "tbc",
   date_end: "tbc",
   browser: "tbc",
-  order: "tbc"
+  order: "tbc",
+  phase_3_triggered: false
 }
 
 $.get("Order1.csv",function(result){
-  //do stuff with result
-console.log(result);
-data_obj.order = Papa.parse(result, {header: true}).data;
-console.log(data_obj.order);
+  data_obj.order = Papa.parse(result, {header: true}).data;
+  run_phase_0();
 });
 
+function run_phase_0(){
+  var marble_poses = [
+    [120, 25],
+    [120, 135],
+    [120, 245],
+    [120, 355],
+    [230, 25],
+    [230, 135],
+    [230, 245],
+    [230, 355],
+    [340, 25],
+    [340, 135],
+    [340, 245],
+    [340, 355],
+    [450, 25],
+    [450, 135],
+    [450, 245],
+    [450, 355],
+    [560, 25],
+    [560, 135],
+    [560, 245],
+    [560, 355],
+  ];
 
-
-
-/*
-
-var points_order = [
-  "10","20","30","40","50","60","70","80","90"
-]
-
-shuffleArray(points_order);
-
-for(i=0; i< points_order.length;i++){
-
-
-  document.getElementById("legend_val1").innerHTML = points_order[i] + " points";
-  document.getElementById("legend_val2").innerHTML = 100 - points_order[i] + " points";
-};
-
-
-var percentage_order = [];
-
-for(var i = 0; i < combinations_obj["20"]; i++){
-  percentage_order.push("20");
-}
-for(var i = 0; i < combinations_obj["19"]; i++){
-  percentage_order.push("19");
-}
-for(var i = 0; i < combinations_obj["15"]; i++){
-  percentage_order.push("15");
-}
-for(var i = 0; i < combinations_obj["10"]; i++){
-  percentage_order.push("10");
-}
-
-
-shuffleArray(percentage_order);
-shuffleArray(color_order);
-*/
-
-var  this_percentage = percentage_order.switch() {
-  case expression:
-
-    break;
-  default:
-
-}();
-var default_color = color_order.pop();
-
-if(default_color == "firebrick"){
-  other_color = "mediumBlue";
-} else {
-  other_color = "firebrick";
-}
-
-var jar_color_order = Array(parseFloat(this_percentage)).fill(default_color)
-                            .concat(Array(20-parseFloat(this_percentage))
-                            .fill(other_color))
-
-shuffleArray(jar_color_order);
-
-
-/* Added jitter to marble position */
-var jitter_max = 5
-var jitter_min = -5
-
-for(i=0; i< jar_color_order.length;i++){
-  $("#marble_"+i).css("background-color",jar_color_order[i]);
-
-old_top = $("#marble_"+i).css("top");
-old_left = $("#marble_"+i).css("left");
-
-  $("#marble_"+i).css("top",(parseInt(old_top,10) + Math.floor(Math.random() * (jitter_max - jitter_min + 1)) + jitter_min) + "px");
-  $("#marble_"+i).css("left",(parseInt(old_left,10) + Math.floor(Math.random() * (jitter_max - jitter_min + 1)) + jitter_min) + "px");
-};
-
-/*
-* Check if array has 4+ repeats
-*/
-/*
-var in_a_row = 0;
-var working_list = [percentage_order[0]];
-var failed_list = [];
-for(var i = 1; i < percentage_order.length; i++){
-  if(percentage_order[i-1] == percentage_order[i]){
-    in_a_row++;
-  } else {
-    in_a_row = 0;
+  for(var i = 0; i < marble_poses.length; i++){
+    $("#marble_" + i).css("top",marble_poses[i][0]+"px");
+    $("#marble_" + i).css("left",marble_poses[i][1]+"px");
   }
-  if(in_a_row > 3){
-    console.log(in_a_row);
-    console.log("i");
-    console.log(i);
 
+  $("#phase_1").hide();
+  $("#phase_2").hide();
+  $("#phase_3").hide();
 
+  var trial_row = data_obj.order.shift();
+  var this_percentage = trial_row.n_main;
+  var default_color = trial_row.main_color;
 
+  if(default_color == "red"){
+    default_color = "firebrick";
+    other_color = "mediumBlue";
   } else {
-    working_list.push(percentage_order[i]);
+    default_color = "mediumBlue";
+    other_color = "firebrick";
   }
-}
-*/
 
+  var jar_color_order = Array(parseFloat(this_percentage)).fill(default_color)
+                              .concat(Array(20-parseFloat(this_percentage))
+                              .fill(other_color))
 
+  shuffleArray(jar_color_order);
 
+  /* Added jitter to marble position */
+  var jitter_max = 5
+  var jitter_min = -5
 
-/*
-* Phase 0
-*/
-setTimeout(function(){
+  for(i=0; i< jar_color_order.length;i++){
+    $("#marble_"+i).css("background-color",jar_color_order[i]);
+    old_top = $("#marble_"+i).css("top");
+    old_left = $("#marble_"+i).css("left");
+    $("#marble_"+i).css(
+      "top",
+      (parseInt(old_top,10) +
+        Math.floor(
+          Math.random() * (jitter_max - jitter_min + 1)
+        ) +
+        jitter_min) +
+        "px");
+    $("#marble_"+i).css("left",(parseInt(old_left,10) + Math.floor(Math.random() * (jitter_max - jitter_min + 1)) + jitter_min) + "px");
+  };
   run_phase_1();
-},500);
-
-// code here to set the colors of the marbles
-
-
+}
 
 /*
 * Phase 1
 */
 function run_phase_1(){
+  $("#phase_0").hide();
+  $("#phase_2").hide();
+  $("#phase_3").hide();
+
   $("#phase_1").show();
   setTimeout(function(){
     $("#phase_1").hide();
@@ -429,11 +290,17 @@ function run_phase_1(){
 * Phase 2
 */
 function run_phase_2(){
+  $("#phase_1").hide();
+  $("#phase_2").hide();
+  $("#phase_3").hide();
+
   $("#phase_2").show();
   setTimeout(function(){
     $("#phase_2").hide();
     setTimeout(function(){
-      run_phase_3();
+      if(data_obj.phase_3_triggered == false){
+        run_phase_3();
+      }
     },500);
   },4000);
 }
@@ -443,12 +310,21 @@ function run_phase_2(){
 * Phase 3
 */
 function run_phase_3(){
+  $("#phase_0").hide();
+  $("#phase_1").hide();
+  $("#phase_2").hide();
+
   $("#phase_3").show();
+  setTimeout(function(){
+    data_obj.current_trial++;
+    run_phase_0();
+  },2000);
 }
 
 
 $(".curious_option").on("click",function(){
-  $("#option_clicked").val(this.id);
+  data_obj.responses[data_obj.current_trial] = this.id;
+
 });
 
 /*

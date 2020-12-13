@@ -1,3 +1,18 @@
+//solution to retrieve get values from url by weltraumpirat at https://stackoverflow.com/questions/5448545/how-to-retrieve-get-parameters-from-javascript/5448635#5448635
+function get_gets() {
+  function transformToAssocArray( prmstr ) {
+    var params = {};
+    var prmarr = prmstr.split("&");
+    for ( var i = 0; i < prmarr.length; i++) {
+      var tmparr = prmarr[i].split("=");
+      params[tmparr[0]] = tmparr[1];
+    }
+    return params;
+  }
+  var prmstr = window.location.search.substr(1);
+  Study.get_vars = prmstr != null && prmstr != "" ? transformToAssocArray(prmstr) : {};
+}
+
 
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -22,15 +37,36 @@ var Study = {
   trial_response: {}
 }
 
+get_gets();
+
 /*
 * Welcome phase
 */
 
-$.get("Order1.csv",function(result){
-  Study.order = Papa.parse(result, {
-    header: true
-  }).data;
-});
+switch(Study.get_vars.order){
+  case "1":
+    $.get("Order1.csv",function(result){
+      Study.order = Papa.parse(result, {
+        header: true
+      }).data;
+    });
+    break;
+  case "2":
+    $.get("Order2.csv",function(result){
+      Study.order = Papa.parse(result, {
+        header: true
+      }).data;
+    });
+    break;
+  case "short":
+    $.get("OrderShort.csv",function(result){
+      Study.order = Papa.parse(result, {
+        header: true
+      }).data;
+    });
+    break;
+}
+
 
 var trial_row;
 
@@ -121,7 +157,9 @@ function run_phase_0(){
   $("#phase_2").hide();
   $("#phase_3").hide();
 
-  if(Study.order.length > 0){
+  console.log("Study.order");
+  console.log(JSON.stringify(Study.order));
+  try{
     trial_row = Study.order.shift();
 
     if(trial_row.main_color == "red"){
@@ -153,7 +191,7 @@ function run_phase_0(){
     Study.trial_response.participant_id = Study.participant_id;
     Study.trial_response.total_score    = Study.total_score;
 
-    /* 
+    /*
 
     /* Added jitter to marble position */
     var jitter_max = 5;
@@ -174,7 +212,7 @@ function run_phase_0(){
       $("#marble_"+i).css("left",(parseInt(old_left,10) + Math.floor(Math.random() * (jitter_max - jitter_min + 1)) + jitter_min) + "px");
     };
     run_phase_1();
-  } else {
+  } catch(error){
     send_data(
       Study.participant_id,
       Papa.unparse(Study.responses)

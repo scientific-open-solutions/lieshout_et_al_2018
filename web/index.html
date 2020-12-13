@@ -303,8 +303,13 @@ function run_phase_1(){
   $("#phase_2").hide();
   $("#phase_3").hide();
 
+if(trial_row.main_color == "firebrick"){
   document.getElementById("legend_val1").innerHTML = trial_row.points_main + " points";
   document.getElementById("legend_val2").innerHTML = 100 - trial_row.points_main + " points";
+} else {
+  document.getElementById("legend_val1").innerHTML = 100 - trial_row.points_main + " points";
+  document.getElementById("legend_val2").innerHTML = trial_row.points_main + " points";
+}
 
   $("#phase_1").show();
 

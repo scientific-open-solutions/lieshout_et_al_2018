@@ -1,0 +1,130 @@
+.center-screen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 500px;
+}
+
+#top_circle{
+  position: relative;
+  width: 485px;
+  height:100px;
+  border-radius:50%;
+  background-color:#DBDADB;
+  border-style: solid;
+}
+
+#jar_main{
+  position: absolute;
+  top: 50px;
+  width: 475px;
+  height: 650px;
+  margin-left:5px;
+  background-color:#DBDADB;
+  border-radius: 0% 0% 15% 15%;
+  border-style: solid;
+}
+
+.marble_class{
+  position: absolute;
+  width:100px;
+  height:100px;
+  border-radius:50px;
+  background-color:mediumBlue;
+}
+
+#marble_legend_col1{
+  top:  280px;
+  left: 700px;
+  background-color:firebrick;
+}
+
+#marble_legend_col2{
+  top:  400px;
+  left: 700px;
+  background-color:mediumBlue;
+}
+
+.general_text{
+  position: absolute;
+   font-family:Calibri;
+   font-size:40px;
+}
+
+#legend_val1{
+  top:305px;
+  left:820px;
+}
+
+#legend_val2{
+  top:425px;
+  left:820px;
+}
+
+.curious_option{
+  position: absolute;
+  width:100px;
+  height:100px;
+  justify-content: center;
+  background-color:grey;
+  border-radius: 15% 15% 15% 15%;
+}
+
+#curious_1{
+  top: 50px;
+
+}
+
+#curious_2{
+  position: absolute;
+  top: 50px;
+  left: 120;
+}
+
+#curious_3{
+  position: absolute;
+  top: 50px;
+  left: 230;
+}
+
+#curious_4{
+  position: absolute;
+  top: 50px;
+  left: 340;
+}
+
+.content{
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   vertical-align: middle;
+}
+
+#outcome_marble{
+    position: absolute;
+    width:100px;
+    height:100px;
+    border-radius:50px;
+    top:  120px;
+    left: 25px;
+    margin-top:-30px;
+    background-color:firebrick;
+}
+
+#outcome_points{
+  position: relative;
+  font-family:Calibri;
+  font-size:40px;
+  top:200px;
+  left:10px;
+
+}
+
+#phase_1,
+#phase_2,
+#phase_3{
+  display:none;
+}

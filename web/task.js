@@ -136,10 +136,23 @@ function run_phase_0(){
                               .fill(trial_row.other_color));
   shuffleArray(jar_color_order);
 
+  /*
+  * trial specific info
+  */
   Study.trial_response = {};
   Object.keys(trial_row).forEach(function(item){
     Study.trial_response[item] = trial_row[item];
   });
+
+  /*
+  * General study info
+  */
+  Study.trial_response.browser        = Study.browser;
+  Study.trial_response.current_trial  = Study.current_trial;
+  Study.trial_response.mobile         = Study.mobile;
+  Study.trial_response.order          = Study.order;
+  Study.trial_response.participant_id = Study.participant_id;
+  Study.trial_response.total_score    = Study.total_score;
 
   /* Added jitter to marble position */
   var jitter_max = 5;

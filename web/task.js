@@ -128,23 +128,22 @@ function run_phase_0(){
     trial_row.other_color = "firebrick";
   }
 
-
-  var trial_show = trial_row.show_no_show;
-
+  /*
+  * come up with random jar color order
+  */
   var jar_color_order = Array(parseFloat(trial_row.n_main)).fill(trial_row.main_color)
                               .concat(Array(20-parseFloat(trial_row.n_main))
-                              .fill(trial_row.other_color))
-
+                              .fill(trial_row.other_color));
   shuffleArray(jar_color_order);
 
-  Study.trial_response = {
-    trial_points: trial_row.points_main,
-    n_main: trial_row.n_main
-  };
+  Study.trial_response = {};
+  Object.keys(trial_row).forEach(function(item){
+    Study.trial_response[item] = trial_row[item];
+  });
 
   /* Added jitter to marble position */
-  var jitter_max = 5
-  var jitter_min = -5
+  var jitter_max = 5;
+  var jitter_min = -5;
 
   for(i=0; i< jar_color_order.length;i++){
     $("#marble_"+i).css("background-color",jar_color_order[i]);
@@ -200,11 +199,10 @@ function run_phase_2(){
   $("#phase_2").show();
   setTimeout(function(){
     $("#phase_2").hide();
-    setTimeout(function(){
-      if(Study.awaiting_response){
-        run_phase_3();
-      }
-    },500);
+    if(Study.awaiting_response){
+      Study.trial_response.curiosity_rating = "NO RESPONSE";
+      run_phase_3();
+    }
   },4000);
 }
 
@@ -215,33 +213,32 @@ function run_phase_3(){
   $("#phase_0").hide();
   $("#phase_1").hide();
   $("#phase_2").hide();
-  if(trial_row.show_no_show == "noShow"){
-    outcome_colour = "black";
-    outcome_points_text = "?? points";
-  } else if (trial_row.show_no_show == "show"){
-    outcome_points = trial_row.win_points;
-    outcome_colour = trial_row.win_color;
-    outcome_points_text = outcome_points + " points";
-  }
-  $("#outcome_marble").css("background-color", outcome_colour);
-  $("#outcome_points").html(outcome_points_text);
-  $("#phase_3").show();
   setTimeout(function(){
-    Study.current_trial++;
-    run_phase_0();
-  },2000);
+    if(trial_row.show_no_show == "noShow"){
+      outcome_colour = "black";
+      outcome_points_text = "?? points";
+    } else if (trial_row.show_no_show == "show"){
+      outcome_points = trial_row.win_points;
+      outcome_colour = trial_row.win_color;
+      outcome_points_text = outcome_points + " points";
+    }
+    $("#outcome_marble").css("background-color", outcome_colour);
+    $("#outcome_points").html(outcome_points_text);
+    $("#phase_3").show();
+    setTimeout(function(){
+      send_data(
+        Study.participant_id + "_trial_" + Study.current_trial,
+        Papa.unparse([Study.trial_response])
+      );
+      Study.current_trial++;
+      run_phase_0();
+    },2000);
+  },500);
 }
 
 $(".curious_option").on("click",function(){
   Study.awaiting_response = false;
-  var this_response = {
-    curiosity_rating : this.id
-  }
-  Study.responses[Study.current_trial] = this_response;
-  send_data(
-    Study.participant_id + "_trial_" + Study.current_trial,
-    Papa.unparse([this_response])
-  );
+  Study.trial_response.curiosity_rating = this.id;
   run_phase_3();
 });
 

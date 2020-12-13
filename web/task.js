@@ -18,7 +18,8 @@ var Study = {
   phase_3_triggered: false,
   responses: [],
   total_score : 0,
-  total_score_array: [0]
+  total_score_array: [0],
+  trial_response: {}
 }
 
 /*
@@ -98,6 +99,7 @@ $("#participant_id").on("input change",function(){
 * Phase 0 - start of the trial
 */
 function run_phase_0(){
+
   var marble_poses = [
   // x    y      x    y      x    y      x    y
     [120, 25],  [120, 135], [120, 245], [120, 355],  // row 1
@@ -126,15 +128,19 @@ function run_phase_0(){
     trial_row.other_color = "firebrick";
   }
 
-  var this_percentage = trial_row.n_main;
-  var trial_points = trial_row.points_main;
+
   var trial_show = trial_row.show_no_show;
 
-  var jar_color_order = Array(parseFloat(this_percentage)).fill(trial_row.main_color)
-                              .concat(Array(20-parseFloat(this_percentage))
+  var jar_color_order = Array(parseFloat(trial_row.n_main)).fill(trial_row.main_color)
+                              .concat(Array(20-parseFloat(trial_row.n_main))
                               .fill(trial_row.other_color))
 
   shuffleArray(jar_color_order);
+
+  Study.trial_response = {
+    trial_points: trial_row.points_main,
+    n_main: trial_row.n_main
+  };
 
   /* Added jitter to marble position */
   var jitter_max = 5
@@ -236,8 +242,7 @@ $(".curious_option").on("click",function(){
     Study.participant_id + "_trial_" + Study.current_trial,
     Papa.unparse([this_response])
   );
-  Study.current_trial++;
-  run_phase_0();
+  run_phase_3();
 });
 
 /*

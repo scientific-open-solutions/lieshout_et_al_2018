@@ -245,6 +245,19 @@ function shuffleArray(array) {
     }
 }
 
+var data_obj = {
+  participant_id : "tbc",
+  responses:[],
+  total_score_array: [0],
+  total_score : 0,
+  browser:"tbc",
+  mobile:"tbc",
+  date_start: "tbc",
+  date_end:"tbc"
+}
+
+
+
 var combinations_obj = {
   "20": 18,
   "19": 153,
@@ -300,10 +313,12 @@ for(i=0; i< jar_color_order.length;i++){
   $("#marble_"+i).css("background-color",jar_color_order[i]);
 };
 
+
+
 /*
 * Check if array has 4+ repeats
 */
-/*
+
 var in_a_row = 0;
 var working_list = [percentage_order[0]];
 var failed_list = [];
@@ -324,7 +339,7 @@ for(var i = 1; i < percentage_order.length; i++){
     working_list.push(percentage_order[i]);
   }
 }
-*/
+
 
 
 
@@ -372,6 +387,12 @@ function run_phase_2(){
 */
 function run_phase_3(){
   $("#phase_3").show();
+  // 50-50 show or no show
+  if (Math.random()> 0.5){
+    // show
+  } else{
+    //no show
+  }
 }
 
 

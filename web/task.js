@@ -297,7 +297,7 @@ function run_phase_3(){
 
 $(".curious_btn").on("click",function(){
   Study.awaiting_response = false;
-  Study.trial_response.curiosity_rating = this.id;
+  Study.trial_response.curiosity_rating = this.id.replace("curious_","");
   run_phase_3();
 });
 

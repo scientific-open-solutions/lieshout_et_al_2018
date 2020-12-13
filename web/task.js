@@ -36,7 +36,7 @@ var trial_row;
 
 $("#start_btn").on("click",function(){
   Study.browser                       = participant_browser;
-  
+
   if($("#participant_id").val().length < 3){
     bootbox.alert("too short");
   } else {
@@ -120,61 +120,67 @@ function run_phase_0(){
   $("#phase_2").hide();
   $("#phase_3").hide();
 
-  trial_row = Study.order.shift();
+  if(Study.order.length > 0){
+    trial_row = Study.order.shift();
 
-  if(trial_row.main_color == "red"){
-    trial_row.main_color = "firebrick";
-    trial_row.other_color = "mediumBlue";
+    if(trial_row.main_color == "red"){
+      trial_row.main_color = "firebrick";
+      trial_row.other_color = "mediumBlue";
+    } else {
+      trial_row.main_color = "mediumBlue";
+      trial_row.other_color = "firebrick";
+    }
+
+    /*
+    * come up with random jar color order
+    */
+    var jar_color_order = Array(parseFloat(trial_row.n_main)).fill(trial_row.main_color)
+                                .concat(Array(20-parseFloat(trial_row.n_main))
+                                .fill(trial_row.other_color));
+    shuffleArray(jar_color_order);
+
+    /*
+    * trial specific info
+    */
+    Study.trial_response = {};
+    Object.keys(trial_row).forEach(function(item){
+      Study.trial_response[item] = trial_row[item];
+    });
+
+    /*
+    * General study info
+    */
+    Study.trial_response.browser        = Study.browser;
+    Study.trial_response.current_trial  = Study.current_trial;
+    Study.trial_response.mobile         = Study.mobile;
+    Study.trial_response.participant_id = Study.participant_id;
+    Study.trial_response.total_score    = Study.total_score;
+
+    /* Added jitter to marble position */
+    var jitter_max = 5;
+    var jitter_min = -5;
+
+    for(i=0; i< jar_color_order.length;i++){
+      $("#marble_"+i).css("background-color",jar_color_order[i]);
+      old_top = $("#marble_"+i).css("top");
+      old_left = $("#marble_"+i).css("left");
+      $("#marble_"+i).css(
+        "top",
+        (parseInt(old_top,10) +
+          Math.floor(
+            Math.random() * (jitter_max - jitter_min + 1)
+          ) +
+          jitter_min) +
+          "px");
+      $("#marble_"+i).css("left",(parseInt(old_left,10) + Math.floor(Math.random() * (jitter_max - jitter_min + 1)) + jitter_min) + "px");
+    };
+    run_phase_1();
   } else {
-    trial_row.main_color = "mediumBlue";
-    trial_row.other_color = "firebrick";
+    send_data(
+      Study.participant_id,
+      Papa.unparse(Study.responses)
+    )
   }
-
-  /*
-  * come up with random jar color order
-  */
-  var jar_color_order = Array(parseFloat(trial_row.n_main)).fill(trial_row.main_color)
-                              .concat(Array(20-parseFloat(trial_row.n_main))
-                              .fill(trial_row.other_color));
-  shuffleArray(jar_color_order);
-
-  /*
-  * trial specific info
-  */
-  Study.trial_response = {};
-  Object.keys(trial_row).forEach(function(item){
-    Study.trial_response[item] = trial_row[item];
-  });
-
-  /*
-  * General study info
-  */
-  Study.trial_response.browser        = Study.browser;
-  Study.trial_response.current_trial  = Study.current_trial;
-  Study.trial_response.mobile         = Study.mobile;
-  Study.trial_response.order          = Study.order;
-  Study.trial_response.participant_id = Study.participant_id;
-  Study.trial_response.total_score    = Study.total_score;
-
-  /* Added jitter to marble position */
-  var jitter_max = 5;
-  var jitter_min = -5;
-
-  for(i=0; i< jar_color_order.length;i++){
-    $("#marble_"+i).css("background-color",jar_color_order[i]);
-    old_top = $("#marble_"+i).css("top");
-    old_left = $("#marble_"+i).css("left");
-    $("#marble_"+i).css(
-      "top",
-      (parseInt(old_top,10) +
-        Math.floor(
-          Math.random() * (jitter_max - jitter_min + 1)
-        ) +
-        jitter_min) +
-        "px");
-    $("#marble_"+i).css("left",(parseInt(old_left,10) + Math.floor(Math.random() * (jitter_max - jitter_min + 1)) + jitter_min) + "px");
-  };
-  run_phase_1();
 }
 
 
@@ -241,6 +247,7 @@ function run_phase_3(){
     $("#outcome_points").html(outcome_points_text);
     $("#phase_3").show();
     setTimeout(function(){
+      Study.responses.push(Study.trial_response);
       send_data(
         Study.participant_id + "_trial_" + Study.current_trial,
         Papa.unparse([Study.trial_response])

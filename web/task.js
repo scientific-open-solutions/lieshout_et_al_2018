@@ -278,6 +278,11 @@ function run_phase_3(){
     } else if (trial_row.show_no_show == "show"){
       outcome_points = trial_row.win_points;
       outcome_colour = trial_row.win_color;
+      if(trial_row.win_color=="red"){
+        trial_row.win_color="firebrick";
+      } else {
+        trial_row.win_color = "mediumBlue";
+      }
       outcome_points_text = outcome_points + " points";
     }
     $("#outcome_marble").css("background-color", outcome_colour);

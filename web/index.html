@@ -1,4 +1,5 @@
 <script src="jquery-3.5.1.min.js"></script>
+<script src="papaparse.min.js"></script>
 
 <style>
 #top_circle{
@@ -277,19 +278,29 @@ function shuffleArray(array) {
     }
 }
 
-var combinations_obj = {
-  "20": 18,
-  "19": 153,
-  "15": 153,
-  "10": 153
+var data_obj ={
+  participant_id : "tbc",
+  responses: [],
+  total_score : 0,
+  total_score_array: [0],
+  mobile: "tbc",
+  date_start : "tbc",
+  date_end: "tbc",
+  browser: "tbc",
+  order: "tbc"
 }
 
-var color_order = Array(239).fill("firebrick")
-                            .concat(Array(238)
-                            .fill("mediumBlue"))
+$.get("Order1.csv",function(result){
+  //do stuff with result
+console.log(result);
+data_obj.order = Papa.parse(result, {header: true}).data;
+console.log(data_obj.order);
+});
 
 
-/* Shuffled array of points associated with colour 1 (just 1 rep of each category for this example) */
+
+
+/*
 
 var points_order = [
   "10","20","30","40","50","60","70","80","90"
@@ -299,15 +310,12 @@ shuffleArray(points_order);
 
 for(i=0; i< points_order.length;i++){
 
-/* take value 1 in legend from points_order; value 2 is 100 - value 1   */
 
   document.getElementById("legend_val1").innerHTML = points_order[i] + " points";
   document.getElementById("legend_val2").innerHTML = 100 - points_order[i] + " points";
 };
 
-/*
-* Create list
-*/
+
 var percentage_order = [];
 
 for(var i = 0; i < combinations_obj["20"]; i++){
@@ -323,13 +331,18 @@ for(var i = 0; i < combinations_obj["10"]; i++){
   percentage_order.push("10");
 }
 
-/*
-* Randomise list order
-*/
+
 shuffleArray(percentage_order);
 shuffleArray(color_order);
+*/
 
-var  this_percentage = percentage_order.pop();
+var  this_percentage = percentage_order.switch() {
+  case expression:
+
+    break;
+  default:
+
+}();
 var default_color = color_order.pop();
 
 if(default_color == "firebrick"){

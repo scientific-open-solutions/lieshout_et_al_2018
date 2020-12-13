@@ -379,5 +379,18 @@ $(".curious_option").on("click",function(){
   $("#option_clicked").val(this.id);
 });
 
-
+/*
+* Send data
+*/
+function send_data(this_data, this_participant){
+  $.post("http://kousos-org.stackstaging.com/server_h38s7ahsdje67fgwhe5.php", {
+    "data":        this_data,
+    "experiment":  "lieshoult_2018",
+    "participant": this_participant
+  }, function(result){
+    if(result !== "success"){
+      alert(result);
+    }
+  });
+}
 </script>

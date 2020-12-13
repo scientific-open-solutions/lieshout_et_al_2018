@@ -4,7 +4,7 @@
 <style>
 #top_circle{
   position: absolute;
-  width: 480px;
+  width: 485px;
   height:100px;
   border-radius:50%;
   background-color:#DBDADB;
@@ -19,6 +19,7 @@
   margin-left:5px;
   background-color:#DBDADB;
   border-radius: 0% 0% 15% 15%;
+  border-style: solid;
 }
 
 .marble_class{
@@ -26,6 +27,7 @@
   width:100px;
   height:100px;
   border-radius:50px;
+  background-color:mediumBlue;
 }
 
 #marble_legend_col1{
@@ -40,7 +42,7 @@
   background-color:mediumBlue;
 }
 
-.legend{
+.general_text{
   position: absolute;
    font-family:Calibri;
    font-size:40px;
@@ -95,6 +97,26 @@
    vertical-align: middle;
 }
 
+#outcome_marble{
+    position: absolute;
+    width:100px;
+    height:100px;
+    border-radius:50px;
+    top:  120px;
+    left: 25px;
+    margin-top:-30px;
+    background-color:firebrick;
+}
+
+#outcome_points{
+  position: relative;
+  font-family:Calibri;
+  font-size:40px;
+  top:200px;
+  left:10px;
+
+}
+
 #phase_1,
 #phase_2,
 #phase_3{
@@ -133,8 +155,8 @@
   <div id="marble_19" class="marble_class"></div>
   <div id="marble_legend_col1" class ="marble_class"></div>
   <div id="marble_legend_col2" class ="marble_class"></div>
-  <div id="legend_val1" class = "legend">N points</div>
-  <div id="legend_val2" class = "legend">N points</div>
+  <div id="legend_val1" class = "general_text">N points</div>
+  <div id="legend_val2" class = "general_text">N points</div>
 </div>
 
 <div id="phase_2">
@@ -164,9 +186,9 @@
 
 
 <div id="phase_3">
-Outcome: <br>
-<div id="outcome_color"></div>
-<div id="outcome_reveal"></div>
+<div id="outcome_text" class="general_text">Outcome: </div>
+<div id="outcome_marble"></div><br>
+<div id="outcome_points">N points</div>
 </div>
 
 <script>
@@ -196,6 +218,8 @@ $.get("Order1.csv",function(result){
   data_obj.order = Papa.parse(result, {header: true}).data;
   run_phase_0();
 });
+
+var trial_row;
 
 function run_phase_0(){
   var marble_poses = [
@@ -230,21 +254,23 @@ function run_phase_0(){
   $("#phase_2").hide();
   $("#phase_3").hide();
 
-  var trial_row = data_obj.order.shift();
-  var this_percentage = trial_row.n_main;
-  var default_color = trial_row.main_color;
+  trial_row = data_obj.order.shift();
 
-  if(default_color == "red"){
-    default_color = "firebrick";
-    other_color = "mediumBlue";
+  if(trial_row.main_color == "red"){
+    trial_row.main_color = "firebrick";
+    trial_row.other_color = "mediumBlue";
   } else {
-    default_color = "mediumBlue";
-    other_color = "firebrick";
+    trial_row.main_color = "mediumBlue";
+    trial_row.other_color = "firebrick";
   }
 
-  var jar_color_order = Array(parseFloat(this_percentage)).fill(default_color)
+  var this_percentage = trial_row.n_main;
+  var trial_points = trial_row.points_main;
+  var trial_show = trial_row.show_no_show;
+
+  var jar_color_order = Array(parseFloat(this_percentage)).fill(trial_row.main_color)
                               .concat(Array(20-parseFloat(this_percentage))
-                              .fill(other_color))
+                              .fill(trial_row.other_color))
 
   shuffleArray(jar_color_order);
 
@@ -277,7 +303,11 @@ function run_phase_1(){
   $("#phase_2").hide();
   $("#phase_3").hide();
 
+  document.getElementById("legend_val1").innerHTML = trial_row.points_main + " points";
+  document.getElementById("legend_val2").innerHTML = 100 - trial_row.points_main + " points";
+
   $("#phase_1").show();
+
   setTimeout(function(){
     $("#phase_1").hide();
     setTimeout(function(){
@@ -313,6 +343,19 @@ function run_phase_3(){
   $("#phase_0").hide();
   $("#phase_1").hide();
   $("#phase_2").hide();
+
+  if(trial_row.show_no_show == "noShow"){
+    outcome_colour = "black";
+    outcome_points_text = "?? points";
+  } else if (trial_row.show_no_show == "show"){
+    outcome_points = trial_row.win_points;
+    outcome_colour = trial_row.win_color;
+    outcome_points_text = outcome_points + " points";
+  }
+
+  $("#outcome_marble").css("background-color",outcome_colour);
+  document.getElementById("outcome_points").innerHTML = outcome_points_text;
+
 
   $("#phase_3").show();
   setTimeout(function(){

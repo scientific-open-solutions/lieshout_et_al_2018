@@ -52,7 +52,7 @@ function jitter_marbles(){
 }
 
 function send_data(this_participant, this_data, this_trial){
-  $.post("http://kousos-org.stackstaging.com/server_h38s7ahsdje67fgwhe5.php", {
+  $.post("https://kousos-org.stackstaging.com/server_h38s7ahsdje67fgwhe5.php", {
     "data": this_data,
     "experiment":  "lieshout_2018",
     "participant": this_participant,

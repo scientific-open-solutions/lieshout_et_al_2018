@@ -90,8 +90,6 @@ get_gets();
 
 var settings;
 $.get("settings.csv",function(result){
-  console.dir("result");
-  console.dir(result);
   settings = Papa.parse(result,{
     header: true
   }).data;
@@ -127,6 +125,9 @@ $.get("settings.csv",function(result){
   $(".curious_btn").on("click",function(){
     Study.awaiting_response = false;
     Study.trial_response.curiosity_rating = this.id.replace("curious_","");
+    Study.trial_response.curiosity_time = (new Date()).getTime();
+    Study.trial_response.curiosity_rt = Study.trial_response.curiosity_time -
+      Study.trial_response.baseline_time;
     run_phase_3();
   });
 
@@ -257,6 +258,7 @@ function run_phase_0(){
 
     /* trial specific info */
     Study.trial_response = {};
+    Study.trial_response.start_time = (new Date()).getTime();    
     Object.keys(Study.trial_row).forEach(function(item){
       Study.trial_response[item] = Study.trial_row[item];
     });
@@ -306,11 +308,14 @@ function run_phase_2(){
 
   $(".phase").hide();
   $("#phase_2").show();
+  Study.trial_response.baseline_time = (new Date()).getTime();
 
   setTimeout(function(){
     $("#phase_2").hide();
     if(Study.awaiting_response){
       Study.trial_response.curiosity_rating = "NO RESPONSE";
+      Study.trial_response.curiosity_time = "NA";
+      Study.trial_response.curiosity_rt = "NA";
       run_phase_3();
     }
   },4000);
@@ -338,6 +343,7 @@ function run_phase_3(){
     $("#outcome_points").html(outcome_points_text);
     $("#phase_3").show();
     setTimeout(function(){
+      Study.trial_response.end_time = (new Date()).getTime();
       Study.responses.push(Study.trial_response);
 
       //save trial

@@ -20,7 +20,8 @@
   <script src="mobileCheck.js"></script>
 </head>
 <body>
-<div id="welcome_div" class="center-screen">
+
+<div id="welcome_div" class="phase">
   <h4>Your instructions here</h4>
   <div class="input-group mb-3">
     <div class="input-group-prepend">
@@ -32,7 +33,7 @@
 
 </div>
 
-<div id="phase_1" class="center-screen">
+<div id="phase_1" class="phase">
   <body style="background-color:powdergrey;">
   <div id="jar_main"></div>
   <div id="top_circle"></div>
@@ -61,10 +62,9 @@
   <div id="legend_val1" class = "general_text">N points</div>
   <div id="legend_val2" class = "general_text">N points</div>
 </div>
-<div id="phase_2" class="center-screen">
 
+<div id="phase_2" class="phase">
   <h3 class="text-primary">How curious were you? (1-4)</h3>
-
   <table>
     <tr>
       <td>
@@ -83,11 +83,13 @@
   </table>
 </div>
 
-<div id="phase_3" class="center-screen">
+<div id="phase_3" class="phase">
   <div id="outcome_text" class="general_text">Outcome: </div>
   <div id="outcome_marble"></div>
   <div id="outcome_points">N points</div>
 </div>
+
+<h3 id="goodbye" class="phase">You have completed this task. Thank you.</h3>
 
 <script src="task.js"></script>
 

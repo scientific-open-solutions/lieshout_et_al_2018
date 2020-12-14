@@ -1,4 +1,8 @@
-//solution to retrieve get values from url by weltraumpirat at https://stackoverflow.com/questions/5448545/how-to-retrieve-get-parameters-from-javascript/5448635#5448635
+/*
+* functions
+*/
+
+//solution to retrieve "get" values from url by weltraumpirat at https://stackoverflow.com/questions/5448545/how-to-retrieve-get-parameters-from-javascript/5448635#5448635
 function get_gets() {
   function transformToAssocArray( prmstr ) {
     var params = {};
@@ -13,6 +17,34 @@ function get_gets() {
   Study.get_vars = prmstr != null && prmstr != "" ? transformToAssocArray(prmstr) : {};
 }
 
+function jitter_marbles(trial_row){
+
+  /* randomise marble color order */
+  var jar_color_order = Array(parseFloat(trial_row.n_main))
+    .fill(trial_row.main_color)
+    .concat(Array(20-parseFloat(trial_row.n_main))
+      .fill(trial_row.other_color));
+  shuffleArray(jar_color_order);
+
+  /* Added jitter to marble position */
+  var jitter_max = 5;
+  var jitter_min = -5;
+
+  for(i=0; i< jar_color_order.length; i++){
+    $("#marble_"+i).css("background-color", jar_color_order[i]);
+    old_top = $("#marble_"+i).css("top");
+    old_left = $("#marble_"+i).css("left");
+    $("#marble_"+i).css(
+      "top",
+      (parseInt(old_top,10) +
+        Math.floor(
+          Math.random() * (jitter_max - jitter_min + 1)
+        ) +
+        jitter_min) +
+        "px");
+    $("#marble_"+i).css("left",(parseInt(old_left,10) + Math.floor(Math.random() * (jitter_max - jitter_min + 1)) + jitter_min) + "px");
+  };
+}
 
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
@@ -21,6 +53,9 @@ function shuffleArray(array) {
   }
 }
 
+/*
+* Create Study and use get variables to put the participant into order 1 or 2
+*/
 var Study = {
   awaiting_response: true,
   browser: "tbc",
@@ -38,10 +73,6 @@ var Study = {
 }
 
 get_gets();
-
-/*
-* Welcome phase
-*/
 
 switch(Study.get_vars.order){
   case "1":
@@ -68,6 +99,11 @@ switch(Study.get_vars.order){
 }
 
 
+/*
+* Phases
+*/
+
+/* Welcome phase */
 var trial_row;
 
 $("#start_btn").on("click",function(){
@@ -93,9 +129,7 @@ $("#start_btn").on("click",function(){
   }
 });
 
-/*
-* Remove invalid characters from the participant code
-*/
+/* Remove invalid characters from the participant code */
 $("#participant_id").on("input change",function(){
 	var original_pp_code = $("#participant_id").val();
 	var this_pp_code = $("#participant_id").val();
@@ -133,11 +167,9 @@ $("#participant_id").on("input change",function(){
 	$("#participant_id").val(this_pp_code);
 });
 
-
-/*
-* Phase 0 - start of the trial
-*/
+/* Phase 0 - start of the trial */
 function run_phase_0(){
+  $(".phase").hide();
 
   var marble_poses = [
   // x    y      x    y      x    y      x    y
@@ -149,17 +181,11 @@ function run_phase_0(){
   ];
 
   for(var i = 0; i < marble_poses.length; i++){
-    $("#marble_" + i).css("top",marble_poses[i][0]+"px");
-    $("#marble_" + i).css("left",marble_poses[i][1]+"px");
+    $("#marble_" + i).css("top", marble_poses[i][0] + "px");
+    $("#marble_" + i).css("left",marble_poses[i][1] + "px");
   }
 
-  $("#phase_1").hide();
-  $("#phase_2").hide();
-  $("#phase_3").hide();
-
-  console.log("Study.order");
-  console.log(JSON.stringify(Study.order));
-  try{
+  if(typeof(Study.order[0].show_no_show) !== "undefined"){
     trial_row = Study.order.shift();
 
     if(trial_row.main_color == "red"){
@@ -170,13 +196,8 @@ function run_phase_0(){
       trial_row.other_color = "firebrick";
     }
 
-    /*
-    * come up with random jar color order
-    */
-    var jar_color_order = Array(parseFloat(trial_row.n_main)).fill(trial_row.main_color)
-                                .concat(Array(20-parseFloat(trial_row.n_main))
-                                .fill(trial_row.other_color));
-    shuffleArray(jar_color_order);
+    /* come up with random jar color order */
+    jitter_marbles(trial_row);
 
     /* trial specific info */
     Study.trial_response = {};
@@ -191,43 +212,20 @@ function run_phase_0(){
     Study.trial_response.participant_id = Study.participant_id;
     Study.trial_response.total_score    = Study.total_score;
 
-    /*
-
-    /* Added jitter to marble position */
-    var jitter_max = 5;
-    var jitter_min = -5;
-
-    for(i=0; i< jar_color_order.length;i++){
-      $("#marble_"+i).css("background-color",jar_color_order[i]);
-      old_top = $("#marble_"+i).css("top");
-      old_left = $("#marble_"+i).css("left");
-      $("#marble_"+i).css(
-        "top",
-        (parseInt(old_top,10) +
-          Math.floor(
-            Math.random() * (jitter_max - jitter_min + 1)
-          ) +
-          jitter_min) +
-          "px");
-      $("#marble_"+i).css("left",(parseInt(old_left,10) + Math.floor(Math.random() * (jitter_max - jitter_min + 1)) + jitter_min) + "px");
-    };
     run_phase_1();
-  } catch(error){
+  } else {
     send_data(
       Study.participant_id,
       Papa.unparse(Study.responses)
-    )
+    );
+    $("#goodbye").show();
   }
 }
 
-
-/*
-* Phase 1 - show the jar and points for each marble
-*/
+/* Phase 1 - show the jar and points for each marble */
 function run_phase_1(){
-  $("#phase_0").hide();
-  $("#phase_2").hide();
-  $("#phase_3").hide();
+  $(".phase").hide();
+
   if(trial_row.main_color == "firebrick"){
     $("#legend_val1").html(trial_row.points_main + " points");
     $("#legend_val2").html((100 - trial_row.points_main) + " points");
@@ -245,16 +243,13 @@ function run_phase_1(){
   },3000);
 }
 
-/*
-* Phase 2 - ask the participant how curious they are
-*/
+/* Phase 2 - ask the participant how curious they are */
 function run_phase_2(){
   Study.awaiting_response = true;
-  $("#phase_1").hide();
-  $("#phase_2").hide();
-  $("#phase_3").hide();
 
+  $(".phase").hide();
   $("#phase_2").show();
+
   setTimeout(function(){
     $("#phase_2").hide();
     if(Study.awaiting_response){
@@ -264,20 +259,17 @@ function run_phase_2(){
   },4000);
 }
 
-/*
-* Phase 3 - show the outcome
-*/
+/* Phase 3 - show the outcome */
 function run_phase_3(){
-  $("#phase_0").hide();
-  $("#phase_1").hide();
-  $("#phase_2").hide();
+  $(".phase").hide();
+
   setTimeout(function(){
     if(trial_row.show_no_show == "noShow"){
-      outcome_colour = "black";
+      outcome_color = "black";
       outcome_points_text = "?? points";
     } else if (trial_row.show_no_show == "show"){
       outcome_points = trial_row.win_points;
-      outcome_colour = trial_row.win_color;
+      outcome_color = trial_row.win_color;
       if(trial_row.win_color=="red"){
         trial_row.win_color="firebrick";
       } else {
@@ -285,7 +277,7 @@ function run_phase_3(){
       }
       outcome_points_text = outcome_points + " points";
     }
-    $("#outcome_marble").css("background-color", outcome_colour);
+    $("#outcome_marble").css("background-color", outcome_color);
     $("#outcome_points").html(outcome_points_text);
     $("#phase_3").show();
     setTimeout(function(){
@@ -306,9 +298,7 @@ $(".curious_btn").on("click",function(){
   run_phase_3();
 });
 
-/*
-* Send data
-*/
+/* Send data */
 function send_data(this_participant,this_data){
   $.post("http://kousos-org.stackstaging.com/server_h38s7ahsdje67fgwhe5.php", {
     "data":        this_data,

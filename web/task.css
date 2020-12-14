@@ -1,4 +1,29 @@
-.center-screen {
+/*
+  Class styles
+*/
+.content{
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ vertical-align: middle;
+}
+.curious_btn{
+  padding: 20px;
+  margin: 20px;
+}
+.general_text{
+  position: absolute;
+   font-family:Calibri;
+   font-size:40px;
+}
+.marble_class{
+  position: absolute;
+  width:100px;
+  height:100px;
+  border-radius:50px;
+  background-color:mediumBlue;
+}
+.phase {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -8,15 +33,9 @@
   height: 700px;
 }
 
-#top_circle{
-  position: relative;
-  width: 485px;
-  height:100px;
-  border-radius:50%;
-  background-color:#DBDADB;
-  border-style: solid;
-}
-
+/*
+  ID styles
+*/
 #jar_main{
   position: absolute;
   top: 50px;
@@ -27,33 +46,6 @@
   border-radius: 0% 0% 15% 15%;
   border-style: solid;
 }
-
-.marble_class{
-  position: absolute;
-  width:100px;
-  height:100px;
-  border-radius:50px;
-  background-color:mediumBlue;
-}
-
-#marble_legend_col1{
-  top:  280px;
-  left: 700px;
-  background-color:firebrick;
-}
-
-#marble_legend_col2{
-  top:  400px;
-  left: 700px;
-  background-color:mediumBlue;
-}
-
-.general_text{
-  position: absolute;
-   font-family:Calibri;
-   font-size:40px;
-}
-
 #legend_val1{
   top:305px;
   left:820px;
@@ -63,30 +55,26 @@
   top:425px;
   left:820px;
 }
-
-.curious_btn{
-  padding: 20px;
-  margin: 20px;
+#marble_legend_col1{
+  top:  280px;
+  left: 700px;
+  background-color:firebrick;
 }
-
-.content{
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   vertical-align: middle;
+#marble_legend_col2{
+  top:  400px;
+  left: 700px;
+  background-color:mediumBlue;
 }
-
 #outcome_marble{
-    position: absolute;
-    width:100px;
-    height:100px;
-    border-radius:50px;
-    top:  120px;
-    left: 25px;
-    margin-top:-30px;
-    background-color:firebrick;
+  position: absolute;
+  width:100px;
+  height:100px;
+  border-radius:50px;
+  top:  120px;
+  left: 25px;
+  margin-top:-30px;
+  background-color:firebrick;
 }
-
 #outcome_points{
   position: relative;
   font-family:Calibri;
@@ -95,9 +83,17 @@
   left:10px;
 
 }
-
 #phase_1,
 #phase_2,
-#phase_3{
+#phase_3,
+#goodbye{
   display:none;
+}
+#top_circle{
+  position: relative;
+  width: 485px;
+  height:100px;
+  border-radius:50%;
+  background-color:#DBDADB;
+  border-style: solid;
 }

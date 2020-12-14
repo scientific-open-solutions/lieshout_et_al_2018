@@ -1,4 +1,9 @@
 /*
+* Created by Scientific Open Solutions
+* Authors: Anthony Haffey, Kristian Tempelmans Plat & Nico Biagi (2020)
+*/
+
+/*
 * functions
 */
 
@@ -258,7 +263,7 @@ function run_phase_0(){
 
     /* trial specific info */
     Study.trial_response = {};
-    Study.trial_response.start_time = (new Date()).getTime();    
+    Study.trial_response.start_time = (new Date()).getTime();
     Object.keys(Study.trial_row).forEach(function(item){
       Study.trial_response[item] = Study.trial_row[item];
     });

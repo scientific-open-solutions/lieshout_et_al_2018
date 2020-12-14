@@ -17,13 +17,13 @@ function get_gets() {
   Study.get_vars = prmstr != null && prmstr != "" ? transformToAssocArray(prmstr) : {};
 }
 
-function jitter_marbles(trial_row){
+function jitter_marbles(){
 
   /* randomise marble color order */
-  var jar_color_order = Array(parseFloat(trial_row.n_main))
-    .fill(trial_row.main_color)
-    .concat(Array(20-parseFloat(trial_row.n_main))
-      .fill(trial_row.other_color));
+  var jar_color_order = Array(parseFloat(Study.trial_row.n_main))
+    .fill(Study.trial_row.main_color)
+    .concat(Array(20-parseFloat(Study.trial_row.n_main))
+      .fill(Study.trial_row.other_color));
   shuffleArray(jar_color_order);
 
   /* Added jitter to marble position */
@@ -44,6 +44,19 @@ function jitter_marbles(trial_row){
         "px");
     $("#marble_"+i).css("left",(parseInt(old_left,10) + Math.floor(Math.random() * (jitter_max - jitter_min + 1)) + jitter_min) + "px");
   };
+}
+
+function send_data(this_participant, this_data, this_trial){
+  $.post("http://kousos-org.stackstaging.com/server_h38s7ahsdje67fgwhe5.php", {
+    "data": this_data,
+    "experiment":  "lieshout_2018",
+    "participant": this_participant,
+    "trial": this_trial
+  }, function(result){
+    if(result !== "success"){
+      console.dir(result);
+    }
+  });
 }
 
 function shuffleArray(array) {
@@ -69,10 +82,55 @@ var Study = {
   responses: [],
   total_score : 0,
   total_score_array: [0],
-  trial_response: {}
+  trial_response: {},
+  trial_row: "tbc"
 }
 
 get_gets();
+
+var settings;
+$.get("settings.csv",function(result){
+  console.dir("result");
+  console.dir(result);
+  settings = Papa.parse(result,{
+    header: true
+  }).data;
+  Study.curiosity_min = settings[0].curiosity_min;
+  Study.curiosity_max = settings[0].curiosity_max;
+
+
+  /*
+  * use settings to update the task
+  */
+
+  /* phase 2 */
+  var phase_2_html = '<h3 class="text-primary" style="text-align: center;">How curious were you? (' +
+    Study.curiosity_min +
+    '-' +
+    Study.curiosity_max + ')' +
+    '</h3>' +
+    '<table style="margin: 0 auto;">' +
+      '<tr>';
+
+  for(var i = Study.curiosity_min; i <= Study.curiosity_max; i++){
+    phase_2_html += '<td>' +
+        '<button id="curious_' + i + '" class="btn btn-lg btn-primary curious_btn">'+
+          i +
+        '</button>' +
+      '</td>';
+  }
+
+  phase_2_html +=  '</tr></table>';
+  $("#phase_2").html(phase_2_html);
+
+  /* this needs to be here after the buttons have been created */
+  $(".curious_btn").on("click",function(){
+    Study.awaiting_response = false;
+    Study.trial_response.curiosity_rating = this.id.replace("curious_","");
+    run_phase_3();
+  });
+
+});
 
 switch(Study.get_vars.order){
   case "1":
@@ -104,8 +162,6 @@ switch(Study.get_vars.order){
 */
 
 /* Welcome phase */
-var trial_row;
-
 $("#start_btn").on("click",function(){
   Study.browser = participant_browser;
   Study.mobile  = window.mobilecheck();
@@ -186,23 +242,23 @@ function run_phase_0(){
   }
 
   if(typeof(Study.order[0].show_no_show) !== "undefined"){
-    trial_row = Study.order.shift();
+    Study.trial_row = Study.order.shift();
 
-    if(trial_row.main_color == "red"){
-      trial_row.main_color = "firebrick";
-      trial_row.other_color = "mediumBlue";
+    if(Study.trial_row.main_color == "red"){
+      Study.trial_row.main_color = "firebrick";
+      Study.trial_row.other_color = "mediumBlue";
     } else {
-      trial_row.main_color = "mediumBlue";
-      trial_row.other_color = "firebrick";
+      Study.trial_row.main_color = "mediumBlue";
+      Study.trial_row.other_color = "firebrick";
     }
 
     /* come up with random jar color order */
-    jitter_marbles(trial_row);
+    jitter_marbles(Study.trial_row);
 
     /* trial specific info */
     Study.trial_response = {};
-    Object.keys(trial_row).forEach(function(item){
-      Study.trial_response[item] = trial_row[item];
+    Object.keys(Study.trial_row).forEach(function(item){
+      Study.trial_response[item] = Study.trial_row[item];
     });
 
     /* General study info */
@@ -216,7 +272,8 @@ function run_phase_0(){
   } else {
     send_data(
       Study.participant_id,
-      Papa.unparse(Study.responses)
+      Papa.unparse(Study.responses),
+      "all"
     );
     $("#goodbye").show();
   }
@@ -226,12 +283,12 @@ function run_phase_0(){
 function run_phase_1(){
   $(".phase").hide();
 
-  if(trial_row.main_color == "firebrick"){
-    $("#legend_val1").html(trial_row.points_main + " points");
-    $("#legend_val2").html((100 - trial_row.points_main) + " points");
+  if(Study.trial_row.main_color == "firebrick"){
+    $("#legend_val1").html(Study.trial_row.points_main + " points");
+    $("#legend_val2").html((100 - Study.trial_row.points_main) + " points");
   } else {
-    $("#legend_val1").html((100 - trial_row.points_main) + " points");
-    $("#legend_val2").html((trial_row.points_main) + " points");
+    $("#legend_val1").html((100 - Study.trial_row.points_main) + " points");
+    $("#legend_val2").html((Study.trial_row.points_main) + " points");
   }
 
   $("#phase_1").show();
@@ -264,16 +321,16 @@ function run_phase_3(){
   $(".phase").hide();
 
   setTimeout(function(){
-    if(trial_row.show_no_show == "noShow"){
+    if(Study.trial_row.show_no_show == "noShow"){
       outcome_color = "black";
       outcome_points_text = "?? points";
-    } else if (trial_row.show_no_show == "show"){
-      outcome_points = trial_row.win_points;
-      outcome_color = trial_row.win_color;
-      if(trial_row.win_color=="red"){
-        trial_row.win_color="firebrick";
+    } else if (Study.trial_row.show_no_show == "show"){
+      outcome_points = Study.trial_row.win_points;
+      outcome_color = Study.trial_row.win_color;
+      if(Study.trial_row.win_color=="red"){
+        Study.trial_row.win_color="firebrick";
       } else {
-        trial_row.win_color = "mediumBlue";
+        Study.trial_row.win_color = "mediumBlue";
       }
       outcome_points_text = outcome_points + " points";
     }
@@ -282,31 +339,22 @@ function run_phase_3(){
     $("#phase_3").show();
     setTimeout(function(){
       Study.responses.push(Study.trial_response);
+
+      //save trial
       send_data(
-        Study.participant_id + "_trial_" + Study.current_trial,
-        Papa.unparse([Study.trial_response])
+        Study.participant_id,
+        Papa.unparse([Study.trial_response]),
+        Study.current_trial
+      );
+
+      //update entire data
+      send_data(
+        Study.participant_id,
+        Papa.unparse(Study.responses),
+        "all"
       );
       Study.current_trial++;
       run_phase_0();
     },2000);
   },500);
-}
-
-$(".curious_btn").on("click",function(){
-  Study.awaiting_response = false;
-  Study.trial_response.curiosity_rating = this.id.replace("curious_","");
-  run_phase_3();
-});
-
-/* Send data */
-function send_data(this_participant,this_data){
-  $.post("http://kousos-org.stackstaging.com/server_h38s7ahsdje67fgwhe5.php", {
-    "data":        this_data,
-    "experiment":  "lieshout_2018",
-    "participant": this_participant
-  }, function(result){
-    if(result !== "success"){
-      alert(result);
-    }
-  });
 }
